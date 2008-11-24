@@ -1,6 +1,6 @@
 `SSF` <-
 function (numsim, tss, nbstep = 10, randompart, fixed = c(0, 
-    1, 0), exgr = NA, exrepl = NA) 
+    1, 0), intercept=0 ,exgr = NA, exrepl = NA) 
 {
     if (is.na(exgr)[[1]]) {
         grmin = 2
@@ -67,7 +67,7 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
     for (k in stepvec) {
         N <- tss
         for (i in 1:numsim) {
-            er <- rnorm(N, 0, sqrt(VR))
+            er <- rnorm(N, intercept, sqrt(VR))
             EF <- rnorm(N, FM, sqrt(FV))
             db <- data.frame(ID = rep(1:mg.r[k, 1], mg.r[k, 2])[1:N], 
                 obs = 1:N, error = er, EF = EF)

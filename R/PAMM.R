@@ -1,5 +1,5 @@
 `PAMM` <-
-function (numsim, group, repl, randompart, fixed = c(0, 1, 0)) 
+function (numsim, group, repl, randompart, fixed = c(0, 1, 0),intercept=0) 
 {
     VI <- as.numeric(randompart[[1]])
     VS <- as.numeric(randompart[[2]])
@@ -44,7 +44,7 @@ function (numsim, group, repl, randompart, fixed = c(0, 1, 0))
         for (r in repl) {
             N <- k * r
             for (i in 1:numsim) {
-                er <- rnorm(N, 0, sqrt(VR))
+                er <- rnorm(N, intercept, sqrt(VR))
                 EF <- rnorm(N, FM, sqrt(FV))
                 db <- data.frame(ID = rep(1:k, r), obs = 1:N, 
                   error = er, EF = EF)

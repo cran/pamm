@@ -1,7 +1,7 @@
 \name{plot.PAMM}
 \alias{plot.PAMM}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{GRAPHIC OUTPUT OF THE PAMM FUNCTION}
+\title{ Graphic output of the PAMM function }
 \description{
   provide graphic interpretation of the simulation results
 }
@@ -25,15 +25,16 @@
 \references{  }
 \author{ Julien Martin }
 \note{ }
-\seealso{ \code{\link{PAMM}},\code{\link{plot.EAMM}},\code{\link{plot.SSF}} }
+\seealso{\code{\link{PAMM}}, \code{\link{plot.EAMM}}, \code{\link{plot.SSF}} }
 \examples{
-## Not run:
-#  ours=PAMM(numsim=10,group=c(10,20,30),repl=c(2,4,6),randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))
-#  plot(ours, "both")
-#  plot(ours, "group",nbrepl=4)
-#  plot(ours,"repl",nbgroup=20)
-## End(Not run)
+   \dontrun{
+  ours=PAMM(numsim=10,group=c(10,20,30),repl=c(2,4,6),randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))
+  plot(ours, "both")
+  plot(ours, "group",nbrepl=4)
+  plot(ours,"repl",nbgroup=20)
+   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ misc }
+\keyword{ misc }% __ONLY ONE__ keyword per line

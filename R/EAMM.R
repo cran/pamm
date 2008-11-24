@@ -1,6 +1,6 @@
 `EAMM` <-
 function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 
-    0.95, 0.05), VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor") 
+    0.95, 0.05), VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor",intercept=0) 
 {
     FM <- fixed[[1]]
     FV <- fixed[[2]]
@@ -37,7 +37,7 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
                     CovIS <- CoIS
                   }
                   sigma <- matrix(c(k, CovIS, CovIS, r), ncol = 2)
-                  er <- rnorm(N, 0, sqrt(VR))
+                  er <- rnorm(N, intercept, sqrt(VR))
                   X <- sort(rep(c(1:repl), group))
                   EF <- rnorm(N, FM, sqrt(FV))
                   db <- data.frame(ID = rep(1:group, repl), obs = 1:N, 
