@@ -56,23 +56,26 @@ function (x, graphtype = "both", vi, vs, ...)
         lines(x$VS[x$VI == vi], x$CIlow.slpo[x$VI == vi], lty = 2)
     }
     if (graphtype == "both") {
-        par(mfrow = c(2, 2))
-       wireframe(int.pval ~ VI + VS, x, colorkey = FALSE, 
+        x11()
+        plot(wireframe(int.pval ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE), xlab = "Var.Intercept", 
             ylab = "Var.Slope", main = "Intercept P-value", 
-            screen = list(z = -50, x = -70, y = 0))
-        wireframe(int.power ~ VI + VS, x, colorkey = FALSE, 
+            screen = list(z = -50, x = -70, y = 0)))
+        x11()
+        plot(wireframe(int.power ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE), xlab = "Var.Intercept", 
             ylab = "Var.Slope", main = "Intercept Power Calculations", 
-            screen = list(z = -50, x = -70, y = 0))
-        wireframe(sl.pval ~ VI + VS, x, colorkey = FALSE, 
+            screen = list(z = -50, x = -70, y = 0)))
+        x11()
+        plot(wireframe(sl.pval ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE), xlab = "Var.Intercept", 
             ylab = "Var.Slope", main = "Slope P-value", 
-            screen = list(z = -50, x = -70, y = 0))
-        wireframe(sl.power ~ VI + VS, x, colorkey = FALSE, 
+            screen = list(z = -50, x = -70, y = 0)))
+        x11()
+        plot(wireframe(sl.power ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE), xlab = "Var.Intercept", 
             ylab = "Var.Slope", main = "Slope Power Calculations", 
-            screen = list(z = -50, x = -70, y = 0))
+            screen = list(z = -50, x = -70, y = 0)))
     }
     if (graphtype == "both.dyn") {
         open3d()

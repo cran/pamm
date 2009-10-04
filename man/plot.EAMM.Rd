@@ -1,7 +1,7 @@
 \name{plot.EAMM}
 \alias{plot.EAMM}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{GRAPHIC OUTPUT OF THE EAMM FUNCTION}
+\title{ Graphic output of the EAMM function }
 \description{
   provide graphic interpretation of the simulation results
 }
@@ -25,16 +25,16 @@
 \references{ }
 \author{ Julien Martin }
 \note{ }
-\seealso{ \code{\link{EAMM}},\code{\link{plot.PAMM}},\code{\link{plot.SSF}} }
+\seealso{\code{\link{EAMM}}, \code{\link{plot.PAMM}}, \code{\link{plot.SSF}} }
 \examples{
-## Not run:
-#  ours=EAMM(numsim=10,group=100,repl=4,VI=seq(0.5,0.9,0.2),VS=c(0.05,0.1))
-#  plot(ours, "both")
-#  plot(ours, "VI",vi=0.4)
-#  plot(ours,"VS",vs=0.1) 
-## End(Not run) 
+   \dontrun{
+  ours=EAMM(numsim=10,group=10,repl=4,VI=seq(0.05,0.95,0.05),VS=c(0.05,0.1))
+  plot(ours, "both")
+  plot(ours, "VI",vi=0.4)
+  plot(ours,"VS",vs=0.1) 
+   } 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ misc }
-
+\keyword{ misc }% __ONLY ONE__ keyword per line

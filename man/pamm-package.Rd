@@ -12,7 +12,7 @@ Description: Simulation functions to assess or explore the power of a dataset to
 \tabular{ll}{
 Package: \tab pamm\cr
 Type: \tab Package\cr
-Version: \tab 0.2\cr
+Version: \tab 0.5\cr
 Date: \tab 2009-06-02\cr
 License: \tab GPL (>=2)\cr
 LazyLoad: \tab yes\cr
@@ -24,12 +24,11 @@ Julien Martin
 Maintainer:Julien Martin <julien.martin2@usherbrooke.ca>
 }
 \references{
-Martin, Nussey, Wilson and Reale ???? Power analysis for random
-effects. Ecology Letters, ????
+Martin, Nussey, Wilson and Reale Submitted Measuring between-individual variation in reaction norms in field and experimental studies: a power analysis of random regression models. Methods in Ecology and Evolution.  
 }
 
 \keyword{ package }
-\seealso{
+\seealso{\code{\link{EAMM}}, \code{\link{SSF}}, \code{\link{PAMM}}
 }
 \examples{
 }
