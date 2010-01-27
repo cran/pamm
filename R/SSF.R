@@ -1,6 +1,6 @@
 `SSF` <-
 function (numsim, tss, nbstep = 10, randompart, fixed = c(0, 
-    1, 0), intercept=0 ,exgr = NA, exrepl = NA) 
+    1, 0), intercept=0 ,exgr = NA, exrepl = NA, heteroscedasticity=c("null")) 
 {
     if (is.na(exgr)[[1]]) {
         grmin = 2
@@ -41,6 +41,10 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
         }
     }
     sigma <- matrix(c(VI, CovIS, CovIS, VS), ncol = 2)
+    
+    Hetero <- heteroscedasticity[[1]]
+    het <- as.numeric(heteroscedasticity[-1])
+
     FM <- fixed[[1]]
     FV <- fixed[[2]]
     FE <- fixed[[3]]
@@ -67,8 +71,14 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
     for (k in stepvec) {
         N <- tss
         for (i in 1:numsim) {
-            er <- rnorm(N, intercept, sqrt(VR))
-            EF <- rnorm(N, FM, sqrt(FV))
+                EF <- rnorm(N, FM, sqrt(FV))
+                er <- numeric(length(N))
+                if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
+                if (Hetero=="power") (
+                for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*(het[1]+abs(EF[n])^het[2])^2))} )
+                if (Hetero=="exp")  (
+                for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*exp(2*het[1]*EF[n])))} )
+
             db <- data.frame(ID = rep(1:mg.r[k, 1], mg.r[k, 2])[1:N], 
                 obs = 1:N, error = er, EF = EF)
             x <- rmvnorm(mg.r[k, 1], c(0, 0), sigma, method = "svd")
@@ -77,14 +87,14 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
             db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + 
                 db$error
             m.lm <- lm(Y ~ EF, data = db)
-            m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db, control = list(maxIter = 200, 
-                msMaxIter = 200))
+            m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db)
+		#, control = list(maxIter = 200, msMaxIter = 200))
             pvint <- pchisq(-2 * (logLik(m.lm, REML = TRUE) - 
                 logLik(m1.lmer, REML = TRUE))[[1]], 1, lower.tail = FALSE)
             powerint[i] <- pvint <= 0.05
             pvalint[i] <- pvint
-            m2.lmer <- lmer(Y ~ EF + (EF | ID), data = db, control = list(maxIter = 200, 
-                msMaxIter = 200))
+            m2.lmer <- lmer(Y ~ EF + (EF | ID), data = db)
+		 # , control = list(maxIter = 200,msMaxIter = 200))
             anosl <- anova(m2.lmer, m1.lmer)
             powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
             pvalsl[i] <- anosl[2, "Pr(>Chisq)"]

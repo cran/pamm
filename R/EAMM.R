@@ -1,7 +1,10 @@
 `EAMM` <-
 function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 
-    0.95, 0.05), VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor",intercept=0) 
+    0.95, 0.05), VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor",intercept=0,heteroscedasticity=c("null")) 
 {
+    Hetero <- heteroscedasticity[[1]]
+    het <- as.numeric(heteroscedasticity[-1])
+
     FM <- fixed[[1]]
     FV <- fixed[[2]]
     FE <- fixed[[3]]
@@ -37,9 +40,15 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
                     CovIS <- CoIS
                   }
                   sigma <- matrix(c(k, CovIS, CovIS, r), ncol = 2)
-                  er <- rnorm(N, intercept, sqrt(VR))
+                EF <- rnorm(N, FM, sqrt(FV))
+                er <- numeric(length(N))
+                if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
+                if (Hetero=="power") (
+                for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*(het[1]+abs(EF[n])^het[2])^2))} )
+                if (Hetero=="exp")  (
+                for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*exp(2*het[1]*EF[n])))} )
+
                   X <- sort(rep(c(1:repl), group))
-                  EF <- rnorm(N, FM, sqrt(FV))
                   db <- data.frame(ID = rep(1:group, repl), obs = 1:N, 
                     error = er, X = X, EF = EF)
                   x <- rmvnorm(group, c(0, 0), sigma, method = "chol")
@@ -48,15 +57,15 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
                   db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + 
                     db$error
                   m.lm <- lm(Y ~ EF, data = db)
-                  m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db, 
-                    control = list(maxIter = 200, msMaxIter = 200))
+                  m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db) 
+                   # control = list(maxIter = 200, msMaxIter = 200))
                   pvint <- pchisq(-2 * (logLik(m.lm, REML = TRUE) - 
                     logLik(m1.lmer, REML = TRUE))[[1]], 1, lower.tail = FALSE)
                   powerint[i] <- pvint <= 0.05
                   pvalint[i] <- pvint
                   if (r > 0) {
-                    m2.lmer <- lmer(Y ~ EF + (EF | ID), data = db, 
-                      control = list(maxIter = 200, msMaxIter = 200))
+                    m2.lmer <- lmer(Y ~ EF + (EF | ID), data = db) 
+                     # control = list(maxIter = 200, msMaxIter = 200))
                     anosl <- anova(m2.lmer, m1.lmer)
                     powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
                     pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
