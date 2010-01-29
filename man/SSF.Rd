@@ -1,51 +1,72 @@
 \name{SSF}
 \alias{SSF}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{ Simulation function to assess power of mixed models }
-\description{ Given a specific total number of observations and variance-covariance structure for random
-  effect, the function simulates different association of number of
-  group and replicates (giving the specified sample size) and assess p-values and power of random
-  intercept and random slope }
-\usage{
-SSF(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0), intercept = 0, exgr = NA, exrepl = NA)
+\description{ Given a specific total number of observations and variance-covariance
+ structure for random effect, the function simulates different association of number of 
+ group and replicates, giving the specified sample size, and assess p-values and
+ power of random intercept and random slope }
+
+\usage{ SSF(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0),
+    intercept = 0, exgr = NA, exrepl = NA, heteroscedasticity = c("null") )
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{numsim}{ number of simulation for each step }
-  \item{tss}{ total sample size (nb group * nb replicates) }
+  \item{tss}{ total sample size, nb group * nb replicates }
   \item{nbstep}{ number of group*replicates associations to simulate }
-  \item{randompart}{ vector of lenght 4 or 5 with 1) variance component
-    of intercept (VI); 2) variance component of slope (VS); 3) residual
-    variance (VR); 4) relation between random intercept and random
-    slope; 5) "cor" or "cov" determine id the relation between I ans S is correlation or covariance (set to correlation by default) }
-  \item{fixed}{ vector of lenght 3 with mean, variance and estimate of fixed effect to simulate }
+  \item{randompart}{ vector of lenght 4 or 5 with 1: variance component
+    of intercept, VI; 2: variance component of slope, VS; 3: residual
+    variance, VR; 4: relation between random intercept and random
+    slope; 5: "cor" or "cov" determine id the relation between I ans S is
+    correlation or covariance, set to \code{"cor"} by default }
+  \item{fixed}{ vector of lenght 3 with mean, variance and estimate of fixed
+   effect to simulate }
   \item{intercept}{a numeric value giving the expected intercept value. Default:0 }
-  \item{exgr}{ a vector specifying minimum and maximum value for number of group. Default:c(2,tss/2) }
-  \item{exrepl}{ a vector specifying minimum and maximum value for number of replicates. Default:c(2,tss/2) }
-  }
-\details{
- P-values for random effects are estimated using a log-likelihood ratio
+  \item{exgr}{ a vector specifying minimum and maximum value for number of group.
+   Default:\code{c(2,tss/2)} }
+  \item{exrepl}{ a vector specifying minimum and maximum value for number
+   of replicates. Default:\code{c(2,tss/2)} }
+  \item{heteroscedasticity}{a vector specifying heterogeneity in residual variance
+    across X. If \code{c("null")} residual variance is homogeneous across X. If
+    \code{c("power",t1,t2)} models heterogeneity with a constant plus power variance
+    function. Letting \eqn{v} denote the variance covariate and \eqn{\sigma^2(v)}{s2(v)}
+    denote the variance function evaluated at \eqn{v}, the constant plus power
+    variance function is defined as \eqn{\sigma^2(v) = (\theta_1 + |v|^{\theta_2})^2}{s2(v) = (t1 + |v|^t2)^2},
+    where \eqn{\theta_1,\theta_2}{t1, t2} are the variance function coefficients.
+    If \code{c("exp",t)},models heterogeneity with an
+    exponential variance function. Letting \eqn{v} denote the variance covariate and \eqn{\sigma^2(v)}{s2(v)}
+  denote the variance function evaluated at \eqn{v}, the exponential
+  variance function is defined as \eqn{\sigma^2(v) = e^{2 * \theta * v}}{s2(v) = exp(2* t * v)}, where \eqn{\theta}{t} is the variance
+  function coefficient. }
+}
+
+\details{ P-values for random effects are estimated using a log-likelihood ratio
  test between two models with and without the effect. Power represent
  the percentage of simulations providing a significant p-value for a
  given random structure
 }
-\value{
-  data frame reporting estimated P-values and power with CI for random
+
+\value{  data frame reporting estimated P-values and power with CI for random
   intercept and random slope  
  }
-\references{ ... }
+\references{ Martin, Nussey, Wilson and Reale Submitted Measuring between-individual
+variation in reaction norms in field and experimental studies: a power
+analysis of random regression models. Methods in Ecology and Evolution.  
+}
 \author{ Julien Martin }
-\note{ }
+
 \section{Warning }{the simulation is based on a balanced data set with
   unrelated group}
+
 \seealso{\code{\link{PAMM}}, \code{\link{EAMM}}, \code{\link{plot.SSF}} }
+
 \examples{
-   \dontrun{
+\dontrun{
   ours<- SSF(100,200,10,c(0.4,0.1,0.6,0))
   plot(ours)
    }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{ misc }
-\keyword{ misc }% __ONLY ONE__ keyword per line
+
