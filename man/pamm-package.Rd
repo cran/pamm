@@ -16,8 +16,8 @@ The functions are based on the "lme4" package.
   \tabular{ll}{
   Package: \tab pamm\cr
   Type: \tab Package\cr
-  Version: \tab 0.6\cr
-  Date: \tab 2010-01-27\cr
+  Version: \tab 0.7\cr
+  Date: \tab 2010-05-20\cr
   License: \tab GPL 2.00\cr
   LazyLoad: \tab yes\cr
   }
