@@ -9,8 +9,8 @@
 
 \usage{
 EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
-      VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor", intercept = 0, 
-      heteroscedasticity = c("null") )
+      VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor", n.X, autocorr.X,
+          X.dist, intercept = 0, heteroscedasticity = c("null") )
 }
 
 \arguments{
@@ -27,6 +27,15 @@ EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
     and random slope. Default: 0}
   \item{relIS}{"cor" or "cov" set the type of relation give in CoIS. By
     default the relation is set to correlation}
+
+  \item{n.X}{ number of different values to simulate for the fixed effect (covariate).
+   If \code{NA}, all values of X are independent between groups. If the value specified
+    is equivalent to the number of replicates per group, \code{repl}, then all groups
+     are observed for the same values of the covariate.  Default: \code{NA} }
+  \item{autocorr.X}{ correlation between two successive covariate value for a group. Default: \code{0} }
+  \item{X.dist}{ specify the distribution of the fixed effect. Only "gaussian" (normal distribution) and
+    "unif" (uniform distribution) are accepted actually. Default: \code{"gaussian"} }
+
   \item{intercept}{a numeric value giving the expected intercept value.
     Default: 0 }
   \item{heteroscedasticity}{a vector specifying heterogeneity in residual

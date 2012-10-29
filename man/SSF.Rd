@@ -7,8 +7,8 @@
  group and replicates, giving the specified sample size, and assess p-values and
  power of random intercept and random slope }
 
-\usage{ SSF(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0),
-    intercept = 0, exgr = NA, exrepl = NA, heteroscedasticity = c("null") )
+\usage{ SSF(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0), n.X, autocorr.X,
+          X.dist, intercept = 0, exgr = NA, exrepl = NA, heteroscedasticity = c("null") )
 }
 
 \arguments{
@@ -22,6 +22,15 @@
     correlation or covariance, set to \code{"cor"} by default }
   \item{fixed}{ vector of lenght 3 with mean, variance and estimate of fixed
    effect to simulate }
+
+  \item{n.X}{ number of different values to simulate for the fixed effect (covariate).
+   If \code{NA}, all values of X are independent between groups. If the value specified
+    is equivalent to the number of replicates per group, \code{repl}, then all groups
+     are observed for the same values of the covariate.  Default: \code{NA} }
+  \item{autocorr.X}{ correlation between two successive covariate value for a group. Default: \code{0} }
+  \item{X.dist}{ specify the distribution of the fixed effect. Only "gaussian" (normal distribution) and
+    "unif" (uniform distribution) are accepted actually. Default: \code{"gaussian"} }
+
   \item{intercept}{a numeric value giving the expected intercept value. Default:0 }
   \item{exgr}{ a vector specifying minimum and maximum value for number of group.
    Default:\code{c(2,tss/2)} }

@@ -1,6 +1,7 @@
 `SSF` <-
 function (numsim, tss, nbstep = 10, randompart, fixed = c(0, 
-    1, 0), intercept=0 ,exgr = NA, exrepl = NA, heteroscedasticity=c("null")) 
+    1, 0), n.X = NA, autocorr.X = 0, X.dist="gaussian", intercept = 0, 
+    exgr = NA, exrepl = NA, heteroscedasticity=c("null")) 
 {
     if (is.na(exgr)[[1]]) {
         grmin = 2
@@ -45,9 +46,17 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
     Hetero <- heteroscedasticity[[1]]
     het <- as.numeric(heteroscedasticity[-1])
 
-    FM <- fixed[[1]]
-    FV <- fixed[[2]]
-    FE <- fixed[[3]]
+    if (X.dist=="gaussian") {
+        FM <- fixed[[1]]
+        FV <- fixed[[2]]
+        FE <- fixed[[3]]
+    }
+    if (X.dist=="unif") {
+        Xmin <- fixed[[1]]
+        Xmax <- fixed[[2]]
+        FE <- fixed[[3]]
+    }
+
     iD <- numeric(length(mg.r[, 1]))
     rp <- numeric(length(mg.r[, 1]))
     ss <- numeric(length(mg.r[, 1]))
@@ -70,8 +79,39 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
     kk <- 0
     for (k in stepvec) {
         N <- tss
+        n.x <- ifelse( is.na(n.X)==TRUE,N, n.X)
         for (i in 1:numsim) {
-                EF <- rnorm(N, FM, sqrt(FV))
+
+                if (X.dist=="gaussian"){
+                    if (autocorr.X==0) { ef <- rnorm(n.x, FM, sqrt(FV)) }
+                    else {
+                        y <- numeric(n.x)
+                        phi <- autocorr.X
+                        y[1] <- rnorm(1, 0, sd = sqrt(FV))
+                        for (t in 2:n.x) { y[t] <- rnorm(1, y[t-1]*phi, sd = sqrt(FV)) }
+                        ef <- y+FM
+                    }
+                }
+
+                if (X.dist=="unif"){
+                    if (autocorr.X==0) { ef <- runif(n.x, Xmin, Xmax) }
+                    else { stop("autocorrelation in fixed effects is not yet implemented for uniform distribution") }
+                }
+
+                if (n.x!=N) {
+                    if (n.x>=mg.r[k, 2]) {
+                        inief <- sample(1:(n.x-mg.r[k, 2]+1),mg.r[k, 1],replace=TRUE)
+                        EFrk <- rep(inief,mg.r[k, 2]) + rep (0:(mg.r[k, 2]-1),each=mg.r[k, 1])  #EFrk <- rep(inief,each=r) + rep (0:(r-1),k)
+                        EF <- ef[EFrk][1:N]
+                     }
+                    if (n.x<mg.r[k, 2]) {
+                            EF <- numeric(N)
+                            EF[1:(n.x*mg.r[k, 1])] <- rep(ef,each=mg.r[k, 1])
+                            EF[(n.x*mg.r[k, 1]+1):N] <- sample(ef,length((n.x*mg.r[k, 1]+1):N),replace=TRUE)
+                    }
+                }
+                else { EF <- ef }
+
                 er <- numeric(length(N))
                 if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
                 if (Hetero=="power") (

@@ -7,8 +7,8 @@
   random intercept and random slope }
 
 \usage{
-PAMM(numsim, group, repl, randompart, fixed, intercept = 0,
-      heteroscedasticity = c("null"), ftype="lmer")
+PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
+          X.dist, intercept, heteroscedasticity = c("null"), ftype="lmer")
 }
 
 \arguments{
@@ -20,6 +20,15 @@ PAMM(numsim, group, repl, randompart, fixed, intercept = 0,
     variance, VR; 4: relation between random intercept and random
     slope; 5: "cor" or "cov" determine if the relation 4 between I ans S is a correlation or a covariance. Default: \code{"cor"} }
   \item{fixed}{ vector with mean, variance and estimate of fixed effect to simulate. Default: \code{c(0,1,0)} }
+
+  \item{n.X}{ number of different values to simulate for the fixed effect (covariate).
+   If \code{NA}, all values of X are independent between groups. If the value specified
+    is equivalent to the number of replicates per group, \code{repl}, then all groups
+     are observed for the same values of the covariate.  Default: \code{NA} }
+  \item{autocorr.X}{ correlation between two successive covariate value for a group. Default: \code{0} }
+  \item{X.dist}{ specify the distribution of the fixed effect. Only "gaussian" (normal distribution) and
+    "unif" (uniform distribution) are accepted actually. Default: \code{"gaussian"} }
+
   \item{intercept}{a numeric value giving the expected intercept value. Default:0 }
   \item{heteroscedasticity}{a vector specifying heterogeneity in residual variance
     across X. If \code{c("null")} residual variance is homogeneous across X. If 
