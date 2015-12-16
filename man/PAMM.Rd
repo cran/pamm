@@ -8,7 +8,7 @@
 
 \usage{
 PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
-          X.dist, intercept, heteroscedasticity = c("null"), ftype="lmer")
+          X.dist, intercept, heteroscedasticity = c("null"), ftype="lmer", mer.sim=FALSE)
 }
 
 \arguments{
@@ -44,6 +44,7 @@ PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
   function coefficient.}
   \item{ftype}{character value "lmer", "lme" or "MCMCglmm" specifying the function to use to fit 
     the model. Actually "lmer" only is accepted }
+  \item{mer.sim}{simulate the data using simulate.merMod from lme4. Faster for large sample size but not as flexible.}
 }
 
 \details{
@@ -73,7 +74,7 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-  ours=PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(2,4,6),
+  ours <- PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(3,4,6),
            randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))       
   plot(ours,"both")
    }
