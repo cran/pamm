@@ -1,20 +1,20 @@
 # Export all names
-exportPattern(".")
+exportPattern("EAMM")
+exportPattern("PAMM")
+exportPattern("SSF")
 
 # Import all packages listed as Imports or Depends
 import("lmerTest")
 
-importFrom("mvtnorm","rmvnorm") 
-importFrom("gmodels","ci") 
+importFrom("mvtnorm","rmvnorm")
 importFrom("lattice","wireframe")
 importFrom("lme4","fixef","getME")
 importFrom("grDevices", "cm.colors", "grey", "rainbow")
-importFrom("graphics", "abline", "axis", "lines", "par", "persp",
+importFrom("graphics", "abline", "axis", "lines", "mtext", "par", "persp",
              "plot")
-importFrom("stats", "as.formula", "formula", "gaussian", "rnorm",
-             "runif", "simulate", "var")
+importFrom("stats", "anova", "as.formula", "formula", "gaussian", "qt", "rnorm",
+             "runif", "sd", "simulate", "var")
 
 S3method(plot, EAMM)
 S3method(plot, PAMM)
 S3method(plot, SSF)
-
