@@ -1,3 +1,86 @@
+#' Simulation function for exploratory power analysis for random effects
+#'
+#'  Given a specific sample size, fixed number of group and replicates per group, the function simulate different variance-covariance structure and assess p-values and power of random intercept and random slope
+#'
+#' @param numsim number of simulation for each step
+#' @param group number of group 
+#' @param repl  number of replicates per group 
+#' @param fixed vector of lenght 3 with mean, variance and estimate of
+#'     fixed effect to simulate. Default: \code{c(0, 1, 0)} 
+#' @param VI variance component of intercept. Could be specified as a
+#'     vector. Default: \code{seq(0.05, 0.95, 0.05)}
+#' @param VS Variance component of the slope or IxE. Could be specified as a vector.
+#'     Default: \code{seq(0.05, 0.5, 0.05)}
+#' @param CoIS value of correlation or covariance between random intercept
+#'     and random slope. Default: 0
+#' @param relIS "cor" or "cov" set the type of relation give in CoIS. By
+#'     default the relation is set to correlation
+#'
+#' @param n.X  number of different values to simulate for the fixed effect (covariate).
+#'    If \code{NA}, all values of X are independent between groups. If the value specified
+#'     is equivalent to the number of replicates per group, \code{repl}, then all groups
+#'      are observed for the same values of the covariate.  Default: \code{NA} 
+#' @param autocorr.X  correlation between two successive covariate value for a group. Default: \code{0} 
+#' @param X.dist  specify the distribution of the fixed effect. Only "gaussian" (normal distribution) and
+#'     "unif" (uniform distribution) are accepted actually. Default: \code{"gaussian"} 
+#'
+#' @param intercept a numeric value giving the expected intercept value.
+#'     Default: 0 
+#' @param heteroscedasticity a vector specifying heterogeneity in residual
+#'     variance across X.  If \code{c("null")} residual variance is homogeneous
+#'     across X. If \code{c("power",t1,t2)} models heterogeneity with a constant
+#'     plus power variance function.
+#'     Letting \eqn{v} denote the variance covariate and \eqn{\sigma^2(v)}{s2(v)}
+#'     denote the variance function evaluated at \eqn{v}, the constant plus power
+#'     variance function is defined as \eqn{\sigma^2(v) = (\theta_1 + |v|^{\theta_2})^2}{s2(v) = (t1 + |v|^t2)^2},
+#'     where \eqn{\theta_1,\theta_2}{t1, t2} are the variance function coefficients.
+#'     If \code{c("exp",t)},models heterogeneity with an
+#'     exponential variance function. Letting \eqn{v} denote the variance covariate and \eqn{\sigma^2(v)}{s2(v)}
+#'   denote the variance function evaluated at \eqn{v}, the exponential
+#'   variance function is defined as \eqn{\sigma^2(v) = e^{2 * \theta * v}}{s2(v) = exp(2* t * v)}, where \eqn{\theta}{t} is the variance
+#'   function coefficient. Default:"Null" 
+#' @param mer.sim Use the simluate.merMod function to simulate the data. Potentially faster for large dataset but more restricted in terms of options
+#' @param mer.model Simulate the data based on a existing data and model structure from a lmer object. Should be specified as a list of 3 components: a mer object fitted via lmer, an environmental covariate for which to test the random slope, a random effect (e.g. \code{list(fm1,"Days","Subject"})
+#'
+#'
+#' @details
+#'  P-values for random effects are estimated using a log-likelihood ratio
+#'  test between two models with and without the effect. Power represent
+#'  the percentage of simulations providing a significant p-value for a
+#'  given random structure.
+#'  Residual variance, e, is calculted as 1-VI.
+#'
+#' @return
+#'   data frame reporting estimated P-values and power with CI for random
+#'   intercept and random slope
+#'
+#'
+#' @seealso
+#' [PAMM()], [SSF()] for other simulations
+#' [plot.EAMM()] for plotting output
+#'
+#' @examples
+#' \dontrun{
+#' ours <- EAMM(
+#'   numsim = 10, group = 10, repl = 4, fixed = c(0, 1, 1),
+#'   VI = seq(0.1, 0.3, 0.05), VS = seq(0.05, 0.2, 0.05)
+#' )
+#' plot(ours, "both")
+#'
+#' (fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy))
+#' ours2 <- EAMM(
+#'   numsim = 10,
+#'   mer.model = list(model = fm1, env = "Days", random = "Subject"),
+#'   VI = seq(0.3, 0.5, 0.1), VS = seq(0.05, 0.2, 0.05)
+#' )
+#' plot(ours2, "both")
+#' }
+#'
+#' @keywords misc
+#'
+#' @export
+#' 
+
 EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0.05),
   VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor", n.X = NA, autocorr.X = 0,
   X.dist = "gaussian", intercept = 0, heteroscedasticity = c("null"), mer.sim = TRUE,
@@ -142,8 +225,8 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
 
             # anosl <- anova(m.nocov, m.nosl, refit =FALSE) powersl[i] <- anosl[2,
             # 'Pr(>Chisq)'] <= 0.05 pvalsl[i] <- anosl[2, 'Pr(>Chisq)']
-            if (class(m.full) != "lmerModLmerTest" || class(m.nosl) !=
-            "lmerModLmerTest") {
+            if (!inherits(m.full, "lmerModLmerTest") || !inherits(m.nosl,
+            "lmerModLmerTest")) {
             powersl[i] <- NA
             pvalsl[i] <- NA
             } else {
@@ -152,8 +235,8 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             pvalsl[i] <- anoIxE[2, "Pr(>Chisq)"]
             }
 
-            if (class(m.nocov) != "lmerModLmerTest" || class(m.noint) !=
-            "lmerModLmerTest") {
+            if (!inherits(m.nocov, "lmerModLmerTest") || !inherits(m.noint,
+            "lmerModLmerTest")) {
             powerint[i] <- NA
             pvalint[i] <- NA
             } else {
@@ -166,7 +249,7 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             powersl[i] <- 0
             pvalsl[i] <- 1
             m1.lmer <- try(lmer(Y ~ EF + (1 | ID), data = db), silent = TRUE)
-            if (class(m1.lmer) != "lmerModLmerTest") {
+            if (!inherits(m1.lmer, "lmerModLmerTest")) {
             powerint[i] <- NA
             pvalint[i] <- NA
             } else {
@@ -216,8 +299,8 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             m.noint <- try(lmer(as.formula(paste("Y", formni)), data = dat),
             silent = TRUE)
 
-            if (class(m.full) != "lmerModLmerTest" || class(m.nosl) !=
-            "lmerModLmerTest") {
+            if (!inherits(m.full, "lmerModLmerTest") || !inherits(m.nosl,
+            "lmerModLmerTest")) {
             powersl[i] <- NA
             pvalsl[i] <- NA
             } else {
@@ -226,8 +309,8 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             pvalsl[i] <- anoIxE[2, "Pr(>Chisq)"]
             }
 
-            if (class(m.nocov) != "lmerModLmerTest" || class(m.noint) !=
-            "lmerModLmerTest") {
+            if (!inherits(m.nocov, "lmerModLmerTest") || !inherits(m.noint,
+            "lmerModLmerTest")) {
             powerint[i] <- NA
             pvalint[i] <- NA
             } else {
@@ -240,7 +323,7 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             pvalsl[i] <- 1
             m.nosl <- try(lmer(as.formula(paste("Y", formns)), data = dat),
             silent = TRUE)
-            if (class(m.nosl) != "lmerModLmerTest") {
+            if (!inherits(m.nosl, "lmerModLmerTest")) {
             powerint[i] <- NA
             pvalint[i] <- NA
             } else {

@@ -1,8 +1,8 @@
 Package: pamm
 Type: Package
 Title: Power Analysis for Random Effects in Mixed Models
-Version: 1.121
-Date: 2020-01-21
+Version: 1.122
+Date: 2023-08-28
 Authors@R: person("Julien","Martin", email = "julien.martin@uottawa.ca",
   role = c("aut", "cre"))
 URL: https://github.com/JulienGAMartin/pamm_R
@@ -13,9 +13,10 @@ Depends: R (>= 3.0.0)
 Imports: lmerTest, lattice, mvtnorm, lme4
 Suggests: rgl
 LazyLoad: yes
+RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2020-01-21 19:00:06 UTC; jmartin
+Packaged: 2023-08-28 19:43:53 UTC; julien
 Author: Julien Martin [aut, cre]
 Maintainer: Julien Martin <julien.martin@uottawa.ca>
 Repository: CRAN
-Date/Publication: 2020-01-22 12:30:02 UTC
+Date/Publication: 2023-08-28 21:40:02 UTC
